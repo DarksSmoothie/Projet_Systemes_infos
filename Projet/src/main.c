@@ -41,7 +41,7 @@ int main(int argc, char *argv[]) { //Argc = nb arguments programme et Argv = tab
         } 
    }
         
-    solve(input_path, output_path, only_longest, debug_level);
+    solve(input_path, output_path, only_longest);
     
 }
 
