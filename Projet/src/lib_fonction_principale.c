@@ -7,10 +7,19 @@
 
 
 // ------------ Ma Fonction -----------------
-void solve(char *input_path, char *output_path, bool only_longest, char debug_level) {
-    // Penser à rajouter des commentaires avec les logs
-    //Ici, pour créer un tableau de longueur variable en C
-    // Nous allons devoir utiliser la fonction malloc (allocation dynamique)
+void solve(char *input_path, char *output_path, bool only_longest) {
+    log_info("Nous allons considérer le fichier %s en entrée et %s en sortie", input_path, output_path);
     
-
+    FILE *input_file = fopen(input_path, "r");
+    if (input_file == NULL) { //Message d'erreur si le fichier ne s'ouvre pas
+        log_info("Erreur lors de l'ouverture du fichier d'entrée : %s", input_path);
+        return;}
+    
+    FILE *output_file = fopen(output_path, "w");
+    if (output_file == NULL) { //Message d'erreur si le fichier ne s'ouvre pas
+        log_info("Erreur lors de l'ouverture du fichier de sortie : %s", output_path);
+        fclose(input_file);
+        return; }
 }
+
+

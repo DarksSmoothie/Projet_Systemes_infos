@@ -3,8 +3,6 @@
 
 
 void arrayInit();
-
-
 void freeArray();
 
 void insertItem(int item);

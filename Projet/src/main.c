@@ -40,6 +40,23 @@ int main(int argc, char *argv[]) { //Argc = nb arguments programme et Argv = tab
             input_path = argv[i+1];
         } 
    }
+
+   //Ouverture des fichiers 
+   
+   if (input_path != NULL){
+        FILE *input_file = fopen(input_path, "r");
+        if (input_file == NULL) { //Message d'erreur si le fichier ne s'ouvre pas
+            log_info("Erreur lors de l'ouverture du fichier d'entrée : %s", input_path);
+            return;
+        } else {}
+    
+   if (output_path != NULL){
+        FILE *output_file = fopen(output_path, "w");
+        if (output_file == NULL) { //Message d'erreur si le fichier ne s'ouvre pas
+            log_info("Erreur lors de l'ouverture du fichier de sortie : %s", output_path);
+            fclose(output_file);
+            return; }
+    } else {}
         
     solve(input_path, output_path, only_longest);
     
