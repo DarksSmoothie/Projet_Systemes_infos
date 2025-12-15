@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include "lib_utilitaires.h"
@@ -6,23 +7,6 @@
 
 //Ici, pour créer un tableau de longueur variable en C
 // Nous allons devoir utiliser un système d'allocation dynamique avec malloc, realloc et free
-
-
- //Structure pour mon longuest  (tableaux de strigs)
-typedef struct {
-    size_t size;      //Taille actuelle du tableau (nombred d'éléments dedans/ mémoire utiisée)
-    size_t capacity;  //Capacité maximale du tableau avant redimensionnement
-    char** array;       //Pointeur vers le premier elem du tableau d'entiers
-}tableau_strings_dynamique;
-
-
-//Structure pour mon valeur (tableaux de char/ string dynamique)
-typedef struct {
-    size_t size;      
-    size_t capacity; 
-    char* array;       
-}string_dynamique;
-
 
 
 //___________________TABLEAUX DYNAMIQUES POUR CHAR (strings dynamiques)_____________________
@@ -39,7 +23,7 @@ int verifRealloc(string_dynamique *container, size_t m) {
         container->array = tmp;
         container->capacity = newcap;
         return 0;
-    }
+    } return 0;
 }
 
 
@@ -54,7 +38,7 @@ void arrayInit(string_dynamique** arr_ptr) //Init une structure et la renvoyer p
 
     container->size = 0;                    //Taille initiale du tableau est 0
     container->capacity = INITIAL_SIZE;     //Capacité initiale du tableau (décris en haut du fichier)
-    container->array[0] = '\0';   
+       
    
     container->array = malloc(INITIAL_SIZE * sizeof *container->array);   //“Je veux assez de mémoire pour stocker INITIAL_SIZE entiers, stoque moi son adresse dans container->array.”
     if (!container->array){                 //Si malloc échoue
@@ -163,12 +147,7 @@ void printArray(string_dynamique* container)
     printf("%lu\n", container->capacity);
 }
 
-// Freeing the memory allocated to the array
-void freeArray(string_dynamique* container)
-{
-    free(container->array);
-    free(container);
-}
+
 
 
 //_______________LOGS_____________________

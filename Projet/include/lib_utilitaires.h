@@ -2,14 +2,15 @@
 #define _LIBUTILITAIRES_H_
 
 
+ //Structure pour mon longuest  (tableaux de strigs)
 typedef struct {
-    size_t size;      
-    size_t capacity;  
-    char** array;       
+    size_t size;      //Taille actuelle du tableau (nombred d'éléments dedans/ mémoire utiisée)
+    size_t capacity;  //Capacité maximale du tableau avant redimensionnement
+    char** array;       //Pointeur vers le premier elem du tableau d'entiers
 }tableau_strings_dynamique;
 
 
-
+//Structure pour mon valeur (tableaux de char/ string dynamique)
 typedef struct {
     size_t size;      
     size_t capacity; 

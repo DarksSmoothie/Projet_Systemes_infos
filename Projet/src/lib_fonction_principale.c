@@ -35,7 +35,7 @@ void solve(FILE *input, FILE *output, bool only_longest) {
         //-------------------------Création de notre char changeable, valeur, sur le heap-------------------------------------
         string_dynamique* valeur = NULL;
         arrayInit(&valeur);
-        string_set(valeur, valeur_recup); //On initialise notre string dynamique avec la valeur lue dans le fichier
+        if (string_set(valeur, valeur_recup)!=0){return;}; //On initialise notre string dynamique avec la valeur lue dans le fichier
         string_dynamique* new_valeur = NULL;
         arrayInit(&new_valeur); 
 
@@ -59,13 +59,13 @@ void solve(FILE *input, FILE *output, bool only_longest) {
                 
             //--------------------------On ajoute le résultat à new_valeur------------------------------------------------
                 int nombre_occurrence = j - j_origine;
-                char* x[32];
+                char x[32];
                 snprintf(x, sizeof x, "%d", nombre_occurrence); // On transforme le nombre en string
-                stringAppend(new_valeur, x);
+                if (stringAppend(new_valeur, x) != 0) {return;} 
                 char tmp[2]; tmp[0] = c; tmp[1] = '\0'; //on crée un string temporaire pour le caractère c (sinon on aurait du recrer une fonction)
-                stringAppend(new_valeur, c);
+                if (stringAppend(new_valeur, tmp) != 0) {return;}
 
-            log_debug("Après traitement, la nouvelle valeur est %s \n", new_valeur);
+            log_debug("Après traitement, la nouvelle valeur est %s \n", new_valeur->array);
             
             //On met à jour valeur avec new_valeur
             }   
@@ -76,12 +76,12 @@ void solve(FILE *input, FILE *output, bool only_longest) {
             
 
         }   
-        log_info("Le résultat final pour le nombre initial après %d itérations est %s \n",iteration,valeur);
+        log_info("Le résultat final pour le nombre initial après %d itérations est %s \n",iteration,valeur->array);
         if (only_longest) {
-            if (longuest->size == 0 || strlen(valeur) > strlen(longuest->array[0])) {
-                longuest->array[0] = valeur;
+            if (longuest->size == 0 || valeur->size > strlen(longuest->array[0])) {
+                longuest->array[0] = strdup(valeur->array); //On stocke une copie du strig et pas le string sinon use after free
             }
-        } else if (strlen(valeur) == strlen(longuest->array[0])){
+        } else if (valeur->size == strlen(longuest->array[0])){
             insertItem(longuest, valeur);
         }
 
