@@ -42,23 +42,30 @@ int main(int argc, char *argv[]) { //Argc = nb arguments programme et Argv = tab
    }
 
    //Ouverture des fichiers 
-   
+    FILE *input;
+    FILE *output;
+
+    //Ouverture des fichiers et vérification des erreurs si le ficheir ne s'est pas ouvert
    if (input_path != NULL){
-        FILE *input_file = fopen(input_path, "r");
-        if (input_file == NULL) { //Message d'erreur si le fichier ne s'ouvre pas
+        input = fopen(input_path, "r");
+        if (input == NULL) { //Message d'erreur si le fichier ne s'ouvre pas
             log_info("Erreur lors de l'ouverture du fichier d'entrée : %s", input_path);
             return;
-        } else {}
+        } 
+    }else {input = stdin;}
     
    if (output_path != NULL){
-        FILE *output_file = fopen(output_path, "w");
-        if (output_file == NULL) { //Message d'erreur si le fichier ne s'ouvre pas
+        output = fopen(output_path, "w");
+        if (output == NULL) { //Message d'erreur si le fichier ne s'ouvre pas
             log_info("Erreur lors de l'ouverture du fichier de sortie : %s", output_path);
-            fclose(output_file);
-            return; }
-    } else {}
-        
-    solve(input_path, output_path, only_longest);
+            fclose(output);
+            return; 
+        }
+   }else {output = stdout;} 
+     
+    
+    //Appel de notre fonction 
+    solve(input, output, only_longest);
     
 }
 
