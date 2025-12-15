@@ -3,21 +3,30 @@
 
 
 typedef struct {
-    size_t size;
-    size_t capacity;
-    int* array;
-}tableau_dynamique;
+    size_t size;      
+    size_t capacity;  
+    char** array;       
+}tableau_strings_dynamique;
 
-void arrayInit(tableau_dynamique** arr_ptr);
-void freeArray(tableau_dynamique* container);
+
+
+typedef struct {
+    size_t size;      
+    size_t capacity; 
+    char* array;       
+}string_dynamique;
+
+
+void arrayInit(string_dynamique** arr_ptr);
+void freeArray(string_dynamique* container);
 
 // Basic Operation functions
-void insertItem(tableau_dynamique* container, int item);
-void updateItem(tableau_dynamique* container, int i, int item);
-int getItem(tableau_dynamique* container, int i);
-void deleteItem(tableau_dynamique* container, int item);
-void printArray(tableau_dynamique* container);
-void freeArray(tableau_dynamique* container);
+void insertItem(string_dynamique* container, int item);
+void updateItem(string_dynamique* container, int i, int item);
+int getItem(string_dynamique* container, int i);
+void deleteItem(string_dynamique* container, int item);
+void printArray(string_dynamique* container);
+void freeArray(string_dynamique* container);
 
 
 

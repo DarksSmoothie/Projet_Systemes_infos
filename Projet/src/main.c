@@ -11,13 +11,13 @@
 int main(int argc, char *argv[]) { //Argc = nb arguments programme et Argv = tableau avec les arguments
 //Le premier argument de argv est toujours le nom du programme
     bool only_longest = false; 
-    char debug_level = "0"; 
+    char debug_level = '0'; 
     char *input_path = NULL;
     char *output_path = NULL;
 
     // Parcourir les arguments pour trouver les options
-    for(int i =0; i < argc; i++) { 
-        if (argv[i] == '--help') {
+    for(int i =1; i < argc; i++) { 
+        if (strcmp(argv[i],"--help")==0) { //On ne peux pas comparer deux strings avec == en C 
             printf("Usage: %s [options]\n", argv[0]);
             printf("Options:\n");
             printf("  --only-longest   Montrer seulement le nombr avec le plus de chiffre différents/ le plus long (si égalité)\n");
@@ -27,21 +27,21 @@ int main(int argc, char *argv[]) { //Argc = nb arguments programme et Argv = tab
             printf("  --help           Montrer ce memssage d'aide\n");
             return 0;
 
-        }else if (argv[i] == '--only-longest') {
+        }else if (strcmp(argv[i],"--only-longest")==0) {
             only_longest = true;
 
-        } else if (argv[i] == '--debug') {
+        } else if (strcmp(argv[i],"--debug")==0)  {
             debug_level = argv[i + 1] ;
 
-        } else if (argv[i] == '--output') {
+        } else if (strcmp(argv[i],"--output")==0)  {
             output_path = argv[i+1];
 
-        } else if (argv[i] == '--input') {
+        } else if (strcmp(argv[i],"--input")==0)  {
             input_path = argv[i+1];
         } 
    }
 
-   //Ouverture des fichiers 
+
     FILE *input;
     FILE *output;
 
@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) { //Argc = nb arguments programme et Argv = tab
         input = fopen(input_path, "r");
         if (input == NULL) { //Message d'erreur si le fichier ne s'ouvre pas
             log_info("Erreur lors de l'ouverture du fichier d'entrée : %s", input_path);
-            return;
+            return -1;
         } 
     }else {input = stdin;}
     
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) { //Argc = nb arguments programme et Argv = tab
         if (output == NULL) { //Message d'erreur si le fichier ne s'ouvre pas
             log_info("Erreur lors de l'ouverture du fichier de sortie : %s", output_path);
             fclose(output);
-            return; 
+            return -1; 
         }
    }else {output = stdout;} 
      
