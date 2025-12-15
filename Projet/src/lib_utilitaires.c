@@ -10,7 +10,7 @@
 typedef struct {
     size_t size;      //Taille actuelle du tableau (nombred d'éléments dedans/ mémoire utiisée)
     size_t capacity;  //Capacité maximale du tableau avant redimensionnement
-    int* array;       //Pointeur vers l'adresse du premier elem du tableau d'entiers
+    int* array;       //Pointeur vers le premier elem du tableau d'entiers
 }tableau_dynamique;
 
 //___________________TABLEAUX DYNAMIQUES_____________________
@@ -29,7 +29,7 @@ void arrayInit(tableau_dynamique** arr_ptr) //Init une structure et la renvoyer 
     container->capacity = INITIAL_SIZE;     //Capacité initiale du tableau (décris en haut du fichier)
     container->array = malloc(INITIAL_SIZE * sizeof *container->array);   //“Je veux assez de mémoire pour stocker INITIAL_SIZE entiers, stoque moi son adresse dans container->array.”
     if (!container->array){                 //Si malloc échoue
-        printf("Memory Allocation Failed\n");
+        log_debug("Memory Allocation Failed\n");
         free(container);                    //On libère la mémoire allouée à la structure (pas obligé mais bonne pratique)
         *arr_ptr = NULL;                    // ATTENTION à ne pas oublier de mettre le pointeur à NULL, sinon il pointera vers une adresse invalide, déjà libérée
         exit(EXIT_FAILURE);
@@ -38,21 +38,26 @@ void arrayInit(tableau_dynamique** arr_ptr) //Init une structure et la renvoyer 
     *arr_ptr = container;
 }
 
+
+
 //  Insertion Operation
-void insertItem(tableau_dynamique* container, int item)
+int insertItem(tableau_dynamique* container, int item)
 {
-    if (container->size == container->capacity) {
-        int *temp = container->array;
-        container->capacity <<= 1;
-        container->array = realloc(container->array, container->capacity * sizeof(int));
-        if(!container->array) {
-            printf("Out of Memory\n");
+    if (container->size == container->capacity) {       
+        int *temp = container->array;           // Sauvegarder l'ancienne adresse en cas d'échec de realloc
+        container->array = realloc(container->array, container->capacity * sizeof(int)*2); //“Redimensionne le bloc mémoire pour qu’il puisse contenir capacity entiers.”
+        if(!container->array) {                 //echec de realloc
+            log_debug("Out of Memory, echec de realloc lors de insertItem\n");
             container->array = temp;
-            return;
+            return -1;                          //On documente si notre code à échoué ou non pour que dans la fonction principale, on puisse arrêter le programme en cas de problème mémoire
         }
+        container->capacity <<= 1;              // Double la capacité (même signification que container->capacity = container->capacity * 2;) <<= 1 = décalage binaire à gauche d’un bit équivalent à multiplier par 2
     }
-    container->array[container->size++] = item;
+    
+    container->array[container->size++] = item; //Insère l'élément et incrémente la taille
+    return 0;
 }
+
 
 
 // Retrieve Item at Particular Index
@@ -64,6 +69,7 @@ int getItem(tableau_dynamique* container, int index)
     }
     return container->array[index];
 }
+
 
 // Update Operation
 void updateItem(tableau_dynamique* container, int index, int item)
@@ -83,13 +89,13 @@ void deleteItem(tableau_dynamique* container, int index)
         return;
     }
 
-    for (int i = index; i < container->size; i++) {
+    for (int i = index; i < container->size; i++) { //On décale tous les éléments après l'index vers la gauche
         container->array[i] = container->array[i + 1];
     }
     container->size--;
 }
 
-// Array Traversal
+
 void printArray(tableau_dynamique* container)
 {
     printf("Array elements: ");
