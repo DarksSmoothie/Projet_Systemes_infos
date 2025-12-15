@@ -1,3 +1,5 @@
+#Trouvé sur Internet, via le lien vers un tutotiel pour la LED (lien disponible dans le syllabus du cours)
+
 import RPi.GPIO as GPIO
 from time import sleep
 #disable warnings (optional)
@@ -5,9 +7,9 @@ GPIO.setwarnings(False)
 #Select GPIO Mode
 GPIO.setmode(GPIO.BCM)
 #set red,green and blue pins
-redPin = 12
-greenPin = 19
-bluePin = 13
+redPin = 13
+greenPin = 17
+bluePin = 20
 #set pins as outputs
 GPIO.setup(redPin,GPIO.OUT)
 GPIO.setup(greenPin,GPIO.OUT)
