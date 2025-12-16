@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <stdbool.h> 
 #include "lib_utilitaires.h"
 #define INITIAL_SIZE 8 //Constante du préprocesseur
 
@@ -170,7 +171,25 @@ void longuestFree(tableau_strings_dynamique *container)
     free(container);
 }
 
+//________________FONCTION  POUR COMPTER LES DIFFERENTS CHIFFRES____________________
+int countDistinctDigits(const char *str) {
+    bool found[10] = {false}; // Indices 1 à 9 pour les chiffres de 1 à 9. Des que on verra un chiffre, on mettra true, puis on comptera le nombre de trues
+    int count = 0;
+    
+    if (str == NULL) return 0;
 
+    for (size_t i = 0; str[i] != '\0'; i++) { //On itère jusque la fin du string
+        
+        if (str[i] >= '0' && str[i] <= '9') { //On vérif que c'est un chiffre entre 1 et 9
+            int digit = str[i] - '0'; //Conversion du caractère en entier 
+            if (!found[digit]) {
+                found[digit] = true;
+                count++;
+            }
+        }
+    }
+    return count;
+}
 
 //_______________LOGS_____________________
 

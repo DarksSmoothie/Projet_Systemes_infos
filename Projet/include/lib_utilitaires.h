@@ -30,7 +30,7 @@ int longuestAppend(tableau_strings_dynamique *container, char *stringAjout);
 void longuestClear(tableau_strings_dynamique *l);
 void longuestFree(tableau_strings_dynamique *container);
 
-
+int countDistinctDigits(const char *str);
 
 //_______________LOGS_____________________
 extern char debug_level; //Moins secu peut altérer le fonctionnement de ma librairie (+ de perf ici car on ne créer pas de fonction pour récup la variable inutilement)

@@ -93,10 +93,11 @@ void solve(FILE *input, FILE *output, bool only_longest) {
 //--------------------------------Stockage dans longuest si onption only longuest---------------------------------------------
         }   
         log_info("Le résultat final pour le nombre initial après %d itérations est %s \n",iteration,valeur->array);
-        
+
+  
         if (only_longest) {
             
-            if (longuest->size == 0 ) {
+            if (longuest->size == 0 ) {  //Si notre longuest est vide (ajout direct)
                 if (longuestAppend(longuest, valeur->array) != 0) //On stocke une copie du strig et pas le string sinon use after free
                 {
                     log_debug("Erreur lors de l'ajout du premier element à longuest");
@@ -106,23 +107,37 @@ void solve(FILE *input, FILE *output, bool only_longest) {
                     return;
                 }                 
             } 
-            else if (valeur->size > strlen(longuest->array[0])){
+            else if (countDistinctDigits(valeur->array) > countDistinctDigits(longuest->array[0])) { //Si on a plus de chiffres différents que le longuest actuel
                 //On free l'ancien longuest
                 longuestClear(longuest);
-                if (longuestAppend(longuest, valeur->array)!=0){
-                    log_debug("Erreur lors de l'ajout d'un nouvel element à longuest plus grand que les anciens");
+                if (longuestAppend(longuest, valeur->array)!=0){ //On rajoute le nouveau
+                    log_debug("Erreur lors de l'ajout d'un nouvel element à longuest avec plus de chiffres différents que les anciens");
                     freeArray(valeur);
                     freeArray(new_valeur);
                     longuestFree(longuest);
                     return;}
+
             }
-            else if (valeur->size == strlen(longuest->array[0])){
-            if(longuestAppend(longuest, valeur->array)!=0){
-                log_debug("Erreur lors de l'ajout d'un nouvel element à longuest de même taille que les anciens");
-                freeArray(valeur);
-                freeArray(new_valeur);
-                longuestFree(longuest);
-                return;}
+            else if (countDistinctDigits(valeur->array) == countDistinctDigits(longuest->array[0])) { //Si on a autant de chiffres différents que le longuest actuel
+                
+                if (valeur->size > strlen(longuest->array[0])){  //Si on est plus long que le longuest actuel
+                    //On free l'ancien longuest
+                    longuestClear(longuest);
+                    if (longuestAppend(longuest, valeur->array)!=0){
+                        log_debug("Erreur lors de l'ajout d'un nouvel element à longuest plus grand que les anciens");
+                        freeArray(valeur);
+                        freeArray(new_valeur);
+                        longuestFree(longuest);
+                        return;}
+                } //si on est égal en taille on l'ajoute simplement
+                else if (valeur->size == strlen(longuest->array[0])){
+                if(longuestAppend(longuest, valeur->array)!=0){
+                    log_debug("Erreur lors de l'ajout d'un nouvel element à longuest de même taille que les anciens");
+                    freeArray(valeur);
+                    freeArray(new_valeur);
+                    longuestFree(longuest);
+                    return;}
+                }
             }
 
         //On free à la fin d'une ligne
@@ -140,9 +155,11 @@ void solve(FILE *input, FILE *output, bool only_longest) {
         //On écrit le/les longuest(s) dans le fichier de sortie
         for (size_t k = 0; k < longuest->size; k++) {
             fprintf(output, "%s\n", longuest->array[k]);
+            log_info("Le résultat avec le plus de chiffres différents et le longuest est: %s.\n", longuest->array[k]);
         }
         
         log_info("Traitement terminé, les résultats ont été écrits dans le fichier de sortie.\n");
+
     }
     longuestFree(longuest);
     
