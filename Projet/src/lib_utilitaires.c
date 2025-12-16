@@ -11,13 +11,13 @@
 
 //___________________TABLEAUX DYNAMIQUES POUR CHAR (strings dynamiques)_____________________
 
-int verifRealloc(string_dynamique *container, size_t m) {
+int verifReallocString(string_dynamique *container, size_t m) {
     if (m + 1 > container->capacity) {      // +1 pour le caractère nul de fin de string
         size_t newcap = container->capacity;                        // nouvelle capacité
         while (newcap < m + 1) newcap *= 2;
-        char *tmp = realloc(container->array, newcap);
+        char *tmp = realloc(container->array, newcap* sizeof *tmp);
         if (!tmp) {
-            log_debug("Out of Memory, echec de realloc lors de verifRealloc\n");
+            log_debug("Out of Memory, echec de realloc lors de verifReallocString\n");
             return -1;                                                              //ATTENTOION A RAJOUTER LES ERREURS DANS LE MAIN
         }
         container->array = tmp;
@@ -55,7 +55,7 @@ void arrayInit(string_dynamique** arr_ptr) //Init une structure et la renvoyer p
 //Fonction pour set notre string dynamique à partir d'un string classique
 int string_set(string_dynamique *container, char *stringInsersion) {
     size_t n = strlen(stringInsersion);                     // longueur de du string à insérer
-    if(verifRealloc(container, n)!= 0){return -1;};      // +1 pour le caractère nul de fin de string    
+    if(verifReallocString(container, n)!= 0){return -1;};      // +1 pour le caractère nul de fin de string    
     memcpy(container->array, stringInsersion, n + 1);
     container->size = n;
     return 0;
@@ -80,7 +80,7 @@ void string_clear(string_dynamique *s)
 
 int stringAppend(string_dynamique *container, char *stringAjout) {
     size_t n = strlen(stringAjout);                     // longueur de du string à insérer
-    if (verifRealloc(container, container->size + n) != 0) {return -1;}     // +1 pour le caractère nul de fin de string
+    if (verifReallocString(container, container->size + n) != 0) {return -1;}     // +1 pour le caractère nul de fin de string
     memcpy(container->array + container->size, stringAjout, n);
     container->size += n;
     container->array[container->size] = '\0';
@@ -90,63 +90,78 @@ int stringAppend(string_dynamique *container, char *stringAjout) {
 
 
 
-//___________________TABLEAUX DYNAMIQUES POUR STRINGS_____________________
 
-//  Insertion Operation
-int insertItem(string_dynamique* container, char item)
-{
-    if (container->size == container->capacity) {       
-        char *temp = container->array;           // Sauvegarder l'ancienne adresse en cas d'échec de realloc
-        container->array = realloc(container->array, (container->capacity * 2) * sizeof *container->array); //“Redimensionne le bloc mémoire pour qu’il puisse contenir capacity entiers.”
-        if(!container->array) {                 //echec de realloc
-            log_debug("Out of Memory, echec de realloc lors de insertItem\n");
-            container->array = temp;
-            return -1;                          //On documente si notre code à échoué ou non pour que dans la fonction principale, on puisse arrêter le programme en cas de problème mémoire
-        }
-        container->capacity <<= 1;              // Double la capacité (même signification que container->capacity = container->capacity * 2;) <<= 1 = décalage binaire à gauche d’un bit équivalent à multiplier par 2
+//___________________TABLEAUX DYNAMIQUES POUR STRINGS (longuest)_____________________
+
+
+void longuestInit(tableau_strings_dynamique** arr_ptr) {//même chose que pour string dynamique
+    tableau_strings_dynamique *container; 
+    container = malloc(sizeof(tableau_strings_dynamique));   
+    if(!container) {
+        printf("First memory Allocation Failed\n");
+        exit(0);
     }
-    
-    container->array[container->size++] = item; //Insère l'élément et incrémente la taille
+
+    container->size = 0;                    
+    container->capacity = INITIAL_SIZE;     
+       
+   
+    container->array = malloc(INITIAL_SIZE * sizeof *container->array);   
+    if (!container->array){                 
+        log_debug("Memory Allocation Failed\n");
+        free(container);                    
+        *arr_ptr = NULL;                    
+        exit(EXIT_FAILURE);
+    }
+    *arr_ptr = container;
+}
+
+
+int verifReallocLonguest(tableau_strings_dynamique *container, size_t m) {  
+    if (m > container->capacity) {
+
+        size_t newcap = container->capacity;                        // nouvelle capacité
+        while (newcap < m ) {newcap *= 2;}                          //ON double cette nouvelle capacité tant que on a pas assez de place
+        char **tmp = realloc(container->array, newcap* sizeof *tmp);
+        if (!tmp) {
+            log_debug("Out of Memory, echec de realloc lors de verifReallocString\n");
+            return -1;                                                              //ATTENTOION A RAJOUTER LES ERREURS DANS LE MAIN
+        }
+        container->array = tmp;
+        container->capacity = newcap;
+        return 0;
+    } 
+    return 0; //Si pas besoin de realloc
+}
+
+
+
+int longuestAppend(tableau_strings_dynamique *container, char *stringAjout) {
+    if (!container || !stringAjout) return -1;
+
+    //Verification de la capacité et realloc si besoin                   
+    if (verifReallocLonguest(container, container->size +1) != 0) {return -1;}     
+    container->array[container->size] = strdup(stringAjout); //On duplique le string pour éviter les problèmes de pointeurs
+    if (!container->array[container->size]) {return -1;}
+    container->size += 1;
     return 0;
 }
 
-
-
-// Retrieve Item at Particular Index
-int getItem(string_dynamique* container, int index)
-{
-    if(index >= container->size) {
-        printf("Index Out of Bounds\n");
-        return -1;
-    }
-    return container->array[index];
+void longuestClear(tableau_strings_dynamique *l) {
+    for (size_t k = 0; k < l->size; k++) free(l->array[k]);
+    l->size = 0;
 }
 
 
-// Update Operation
-void updateItem(string_dynamique* container, int index, char item)
+void longuestFree(tableau_strings_dynamique *container)
 {
-    if (index >= container->size) {
-        printf("Index Out of Bounds\n");
-        return;
+    if (!container) return;
+    for (size_t i = 0; i < container->size; i++) {
+        free(container->array[i]);
     }
-    container->array[index] = item;
+    free(container->array);
+    free(container);
 }
-
-
-
-void printArray(string_dynamique* container)
-{
-    printf("Array elements: ");
-    for (int i = 0; i < container->size; i++) {
-        printf("%d ", container->array[i]);
-    }
-    printf("\nSize: ");
-    printf("%lu", container->size);
-    printf("\nCapacity: ");
-    printf("%lu\n", container->capacity);
-}
-
 
 
 
