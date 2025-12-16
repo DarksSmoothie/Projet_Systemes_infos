@@ -69,6 +69,7 @@ void solve(FILE *input, FILE *output, bool only_longest) {
                     log_debug("Erreur lors de l'ajout du nombre d'occurrence %d à la nouvelle valeur \n", nombre_occurrence);
                     freeArray(valeur);
                     freeArray(new_valeur);
+                    longuestFree(longuest);
                     return;
                 } 
                 char tmp[2]; tmp[0] = c; tmp[1] = '\0'; //on crée un string temporaire pour le caractère c (sinon on aurait du recrer une fonction)
@@ -76,6 +77,7 @@ void solve(FILE *input, FILE *output, bool only_longest) {
                     log_debug("Erreur lors de l'ajout du caractère %c à la nouvelle valeur \n", c);
                     freeArray(valeur);
                     freeArray(new_valeur);
+                    longuestFree(longuest);
                     return;
                 }
 

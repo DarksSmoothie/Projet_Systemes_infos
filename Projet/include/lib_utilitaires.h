@@ -17,17 +17,18 @@ typedef struct {
     char* array;       
 }string_dynamique;
 
-
+int verifReallocString(string_dynamique *container, size_t m);
 void arrayInit(string_dynamique** arr_ptr);
 void freeArray(string_dynamique* container);
+int string_set(string_dynamique *container, char *stringInsersion);
+void string_clear(string_dynamique *s);
+int stringAppend(string_dynamique *container, char *stringAjout);
 
-// Basic Operation functions
-void insertItem(string_dynamique* container, int item);
-void updateItem(string_dynamique* container, int i, int item);
-int getItem(string_dynamique* container, int i);
-void deleteItem(string_dynamique* container, int item);
-void printArray(string_dynamique* container);
-void freeArray(string_dynamique* container);
+void longuestInit(tableau_strings_dynamique** arr_ptr);
+int verifReallocLonguest(tableau_strings_dynamique *container, size_t m);
+int longuestAppend(tableau_strings_dynamique *container, char *stringAjout);
+void longuestClear(tableau_strings_dynamique *l);
+void longuestFree(tableau_strings_dynamique *container);
 
 
 

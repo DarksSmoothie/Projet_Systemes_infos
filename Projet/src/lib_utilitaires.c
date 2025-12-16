@@ -158,6 +158,7 @@ void longuestFree(tableau_strings_dynamique *container)
     if (!container) return;
     for (size_t i = 0; i < container->size; i++) {
         free(container->array[i]);
+        container->array[i] = NULL; 
     }
     free(container->array);
     free(container);

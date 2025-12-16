@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) { //Argc = nb arguments programme et Argv = tab
             only_longest = true;
 
         } else if (strcmp(argv[i],"--debug")==0)  {
-            debug_level = argv[i + 1] ;
+            debug_level = argv[i + 1][0] ;
 
         } else if (strcmp(argv[i],"--output")==0)  {
             output_path = argv[i+1];
@@ -58,7 +58,6 @@ int main(int argc, char *argv[]) { //Argc = nb arguments programme et Argv = tab
         output = fopen(output_path, "w");
         if (output == NULL) { //Message d'erreur si le fichier ne s'ouvre pas
             log_info("Erreur lors de l'ouverture du fichier de sortie : %s", output_path);
-            fclose(output);
             return -1; 
         }
    }else {output = stdout;} 
@@ -66,6 +65,9 @@ int main(int argc, char *argv[]) { //Argc = nb arguments programme et Argv = tab
     
     //Appel de notre fonction 
     solve(input, output, only_longest);
+    if (input != stdin) fclose(input);
+    if (output != stdout) fclose(output);
+    return 0;
     
 }
 
