@@ -24,4 +24,4 @@ src/lib_couleurs.o: src/lib_couleurs.c include/lib_couleurs.h
 
 
 clean:
-	rm -f src/main.o src/lib_utilitaires.o src/lib_fonction_principale.o math_suite
+	rm -f src/main.o src/lib_utilitaires.o src/lib_fonction_principale.o math_suite src/lib_couleurs.o

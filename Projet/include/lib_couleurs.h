@@ -26,4 +26,4 @@ int yellow(void);
 int purple(void);
 int lightBlue(void);
 
-#endif /* LIB_COULEURS_H */
+#endif 
