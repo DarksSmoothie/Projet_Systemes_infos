@@ -58,4 +58,3 @@ if __name__ == "__main__":
     in_file = sys.stdin if args.input is None else open(args.input)
 
     solve(in_file, out_file, args.only_longest, args.debug)
-    
