@@ -17,7 +17,7 @@ void solve(FILE *input, FILE *output, bool only_longest) {
     char ligne[4096];         //Initialisation de la structure tableau dynamique (on passe l'adresse du pointeur pour qu'il puisse être modifié dans la fonction)
     // Ici, le arrayInit gère touys seul et quitte le programme s'il y a une erreur
 
-    //----------------------Boucle sur chaque ligner du fichier -----------------------------------------------------
+    //----------------------Boucle sur chaque ligne du fichier -----------------------------------------------------
     while(fgets(ligne, sizeof ligne, input)) { //Tant qu'on peut lire une ligne du fichier d'entrée
         char valeur_recup[4096];
         int iteration;
