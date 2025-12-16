@@ -4,28 +4,26 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "lib_utilitaires.h" //REGLER CA //Fonction utilitaires pour la gestion de tableaux dynamiques
+#include "lib_utilitaires.h" // Fonction utilitaires pour la gestion de tableaux dynamiques
+#include "lib_couleurs.h"
 
-//ATTENTION PENSER A RAJOUTER LES CONDITIONS D'ERREIR ET DE FREE POUR CHAQUE FONCTION DE LIB_UTILITAIRES freeArray(valeur) et freeArray(new_valeur)
+//ATTENTION PENSER A RAJOUTER LES CONDITIONS D'ERREUR ET DE FREE POUR CHAQUE FONCTION DE LIB_UTILITAIRES freeArray(valeur) et freeArray(new_valeur)
 extern char debug_level;
 
 // ------------ Ma Fonction -----------------
-void solve(FILE *input, FILE *output, bool only_longest) {
-    bool empty_file = true ; // mettre que le fichier est vide pour vérifier plus tard
+int solve(FILE *input, FILE *output, bool only_longest, void (*on_progress)(void)) {
+    bool empty_file = true; // mettre que le fichier est vide pour vérifier plus tard
+    int ret = 0;
     
     log_info("Nous allons commencer le traitement des données en considérant l'option only_longuest:%d \n", only_longest);   
     tableau_strings_dynamique* longuest = NULL; //Pointeur vers ma structure tableau dynamique (pas directement la structure car sinon sur le stack et ça disparait)
     longuestInit(&longuest); 
     char ligne[4096];         //Initialisation de la structure tableau dynamique (on passe l'adresse du pointeur pour qu'il puisse être modifié dans la fonction)
-    // Ici, le arrayInit gère touys seul et quitte le programme s'il y a une erreur
-<<<<<<< HEAD
+    // Ici, le arrayInit gère tout seul et quitte le programme s'il y a une erreur
 
     //----------------------Boucle sur chaque ligne du fichier -----------------------------------------------------
-=======
-    //----------------------Boucle sur chaque ligner du fichier -----------------------------------------------------
->>>>>>> 3d89eace0dc4a158481835595821caf75f7d97e0
     while(fgets(ligne, sizeof ligne, input)) { //Tant qu'on peut lire une ligne du fichier d'entrée
-        empty_file =false; //le fichier n'est donc pas vide
+        empty_file = false; //le fichier n'est donc pas vide
         int iteration;
 
         char *p = ligne;
@@ -79,7 +77,7 @@ void solve(FILE *input, FILE *output, bool only_longest) {
 
         iteration = (int) iteration_long;
 
-        // ligne valide → continuer normalement
+        // ligne valide -> continuer normalement
         goto valid_line;
 
         next_line:
@@ -91,17 +89,18 @@ void solve(FILE *input, FILE *output, bool only_longest) {
 
         //-------------------------Création de notre char changeable, valeur, sur le heap-------------------------------------
         string_dynamique* valeur = NULL;
+        string_dynamique* new_valeur = NULL;
         arrayInit(&valeur);
         if (string_set(valeur, valeur_recup)!=0){
+            ret = -1;
             freeArray(valeur);
             longuestFree(longuest);
-            return;
+            return ret;
         }; //On initialise notre string dynamique avec la valeur lue dans le fichier
-        string_dynamique* new_valeur = NULL;
         arrayInit(&new_valeur); 
 
         //------------------------Application de la suite--------------------------------------------------------
-        for (int i = 0; i < iteration; i++) { //On répète b fois l'opération
+        for (int i = 0; i < iteration; i++) { //On répéte b fois l'opération
             log_info("Itération %d pour le nombre %s \n", i+1, valeur->array);
             string_clear(new_valeur);
 
@@ -124,18 +123,20 @@ void solve(FILE *input, FILE *output, bool only_longest) {
                 snprintf(x, sizeof x, "%d", nombre_occurrence); // On transforme le nombre en string
                 if (stringAppend(new_valeur, x) != 0) {
                     log_debug("Erreur lors de l'ajout du nombre d'occurrence %d à la nouvelle valeur \n", nombre_occurrence);
+                    ret = -1;
                     freeArray(valeur);
                     freeArray(new_valeur);
                     longuestFree(longuest);
-                    return;
+                    return ret;
                 } 
                 char tmp[2]; tmp[0] = c; tmp[1] = '\0'; //on crée un string temporaire pour le caractère c (sinon on aurait du recrer une fonction)
                 if (stringAppend(new_valeur, tmp) != 0) {
                     log_debug("Erreur lors de l'ajout du caractère %c à la nouvelle valeur \n", c);
+                    ret = -1;
                     freeArray(valeur);
                     freeArray(new_valeur);
                     longuestFree(longuest);
-                    return;
+                    return ret;
                 }
 
             log_debug("Après traitement, la nouvelle valeur est %s \n", new_valeur->array);
@@ -158,10 +159,11 @@ void solve(FILE *input, FILE *output, bool only_longest) {
                 if (longuestAppend(longuest, valeur->array) != 0) //On stocke une copie du strig et pas le string sinon use after free
                 {
                     log_debug("Erreur lors de l'ajout du premier element à longuest");
+                    ret = -1;
                     freeArray(valeur);
                     freeArray(new_valeur);
                     longuestFree(longuest);
-                    return;
+                    return ret;
                 }                 
             } 
             else if (countDistinctDigits(valeur->array) > countDistinctDigits(longuest->array[0])) { //Si on a plus de chiffres différents que le longuest actuel
@@ -169,10 +171,11 @@ void solve(FILE *input, FILE *output, bool only_longest) {
                 longuestClear(longuest);
                 if (longuestAppend(longuest, valeur->array)!=0){ //On rajoute le nouveau
                     log_debug("Erreur lors de l'ajout d'un nouvel element à longuest avec plus de chiffres différents que les anciens");
+                    ret = -1;
                     freeArray(valeur);
                     freeArray(new_valeur);
                     longuestFree(longuest);
-                    return;}
+                    return ret;}
 
             }
             else if (countDistinctDigits(valeur->array) == countDistinctDigits(longuest->array[0])) { //Si on a autant de chiffres différents que le longuest actuel
@@ -182,18 +185,20 @@ void solve(FILE *input, FILE *output, bool only_longest) {
                     longuestClear(longuest);
                     if (longuestAppend(longuest, valeur->array)!=0){
                         log_debug("Erreur lors de l'ajout d'un nouvel element à longuest plus grand que les anciens");
+                        ret = -1;
                         freeArray(valeur);
                         freeArray(new_valeur);
                         longuestFree(longuest);
-                        return;}
+                        return ret;}
                 } //si on est égal en taille on l'ajoute simplement
                 else if (valeur->size == strlen(longuest->array[0])){
                 if(longuestAppend(longuest, valeur->array)!=0){
                     log_debug("Erreur lors de l'ajout d'un nouvel element à longuest de même taille que les anciens");
+                    ret = -1;
                     freeArray(valeur);
                     freeArray(new_valeur);
                     longuestFree(longuest);
-                    return;}
+                    return ret;}
                 }
             }
 
@@ -207,6 +212,7 @@ void solve(FILE *input, FILE *output, bool only_longest) {
             freeArray(valeur);
             freeArray(new_valeur);
         }
+        if (on_progress) on_progress();
     } //Fin de la boucle sur les lignes du fichier
     if (empty_file) {
         log_info("Le fichier d'entrée est vide, aucun traitement effectué.\n");
@@ -222,9 +228,6 @@ void solve(FILE *input, FILE *output, bool only_longest) {
 
     }
     longuestFree(longuest);
-    
-
+    return ret;
 
 }
-
-

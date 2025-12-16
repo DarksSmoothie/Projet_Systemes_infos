@@ -84,6 +84,16 @@ void led_shutdown(void) {
     write_str("/sys/class/gpio/unexport", num);
 }
 
+int led_set_success(void) { return green(); }
+int led_set_error(void)   { return red();   }
+
+int led_toggle_running(void) {
+    static bool toggle = false;
+    toggle = !toggle;
+    /* Couleurs d'exécution (pas rouge/vert) : bleu et violet. */
+    return toggle ? blue() : purple();
+}
+
 int turnOff(void)   { return set_rgb(LED_OFF, LED_OFF, LED_OFF); }
 int white(void)     { return set_rgb(LED_ON,  LED_ON,  LED_ON ); }
 int red(void)       { return set_rgb(LED_ON,  LED_OFF, LED_OFF); }

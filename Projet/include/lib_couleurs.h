@@ -16,6 +16,13 @@ int led_init(void);
 /* Eteint la LED et dés-exporte les broches. Optionnel mais propre. */
 void led_shutdown(void);
 
+/* Raccourcis d'état. Retourne 0 si OK, -1 sinon (par exemple si GPIO non accessible). */
+int led_set_success(void); /* vert */
+int led_set_error(void);   /* rouge */
+
+/* Alterne entre deux couleurs d'exécution (bleu / violet). */
+int led_toggle_running(void);
+
 /* Fonctions de couleur. Retourne 0 en cas de succès, -1 en cas d'erreur. */
 int turnOff(void);
 int white(void);
