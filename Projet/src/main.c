@@ -7,6 +7,11 @@
 #include "lib_utilitaires.h"
 #include "lib_couleurs.h"
 
+static void led_progress_cb(void) {
+    /* Alterne les couleurs pendant l'exécution (ignore les erreurs GPIO). */
+    led_toggle_running();
+}
+
 
 
 // ------------ FONCTION MAIN -------------
@@ -16,6 +21,7 @@ int main(int argc, char *argv[]) { //Argc = nb arguments programme et Argv = tab
     bool only_longest = false; 
     char *input_path = NULL;
     char *output_path = NULL;
+    bool led_ok = false;
 
     // Parcourir les arguments pour trouver les options
     for(int i =1; i < argc; i++) { 
@@ -69,11 +75,22 @@ int main(int argc, char *argv[]) { //Argc = nb arguments programme et Argv = tab
      
     
     //Appel de notre fonction 
-    solve(input, output, only_longest);
+    if (led_init() == 0) {
+        led_ok = true;
+        led_toggle_running(); /* première couleur pendant l'exécution */
+    }
+
+    int status = solve(input, output, only_longest, led_ok ? led_progress_cb : NULL);
+
+    if (led_ok) {
+        if (status == 0) led_set_success();
+        else led_set_error();
+        led_shutdown();
+    }
+
     if (input != stdin) fclose(input);
     if (output != stdout) fclose(output);
-    return 0;
+    return status;
     
 }
-
 
