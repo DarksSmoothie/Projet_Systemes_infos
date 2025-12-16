@@ -11,7 +11,7 @@
 int main(int argc, char *argv[]) { //Argc = nb arguments programme et Argv = tableau avec les arguments
 //Le premier argument de argv est toujours le nom du programme
     bool only_longest = false; 
-    char debug_level = '0'; 
+    extern char debug_level = '0'; 
     char *input_path = NULL;
     char *output_path = NULL;
 
@@ -31,12 +31,15 @@ int main(int argc, char *argv[]) { //Argc = nb arguments programme et Argv = tab
             only_longest = true;
 
         } else if (strcmp(argv[i],"--debug")==0)  {
+            if (i + 1 >= argc) { fprintf(stderr, "--debug nécessite une valeur\n"); return -1; }
             debug_level = argv[i + 1][0] ;
 
         } else if (strcmp(argv[i],"--output")==0)  {
+            if (i + 1 >= argc) { fprintf(stderr, "--output nécessite une valeur\n"); return -1; }
             output_path = argv[i+1];
 
         } else if (strcmp(argv[i],"--input")==0)  {
+            if (i + 1 >= argc) { fprintf(stderr, "--input nécessite une valeur\n"); return -1; }
             input_path = argv[i+1];
         } 
    }

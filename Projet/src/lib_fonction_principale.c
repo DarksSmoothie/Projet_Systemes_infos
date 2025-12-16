@@ -7,7 +7,7 @@
 #include "lib_utilitaires.h" //REGLER CA //Fonction utilitaires pour la gestion de tableaux dynamiques
 
 //ATTENTION PENSER A RAJOUTER LES CONDITIONS D'ERREIR ET DE FREE POUR CHAQUE FONCTION DE LIB_UTILITAIRES freeArray(valeur) et freeArray(new_valeur)
-
+extern char debug_level;
 
 // ------------ Ma Fonction -----------------
 void solve(FILE *input, FILE *output, bool only_longest) {
@@ -37,7 +37,7 @@ void solve(FILE *input, FILE *output, bool only_longest) {
         arrayInit(&valeur);
         if (string_set(valeur, valeur_recup)!=0){
             freeArray(valeur);
-            freeLonguest(longuest);
+            longuestFree(longuest);
             return;
         }; //On initialise notre string dynamique avec la valeur lue dans le fichier
         string_dynamique* new_valeur = NULL;
