@@ -11,26 +11,83 @@ extern char debug_level;
 
 // ------------ Ma Fonction -----------------
 void solve(FILE *input, FILE *output, bool only_longest) {
+    bool empty_file = true ; // mettre que le fichier est vide pour vérifier plus tard
+    
     log_info("Nous allons commencer le traitement des données en considérant l'option only_longuest:%d \n", only_longest);   
     tableau_strings_dynamique* longuest = NULL; //Pointeur vers ma structure tableau dynamique (pas directement la structure car sinon sur le stack et ça disparait)
     longuestInit(&longuest); 
     char ligne[4096];         //Initialisation de la structure tableau dynamique (on passe l'adresse du pointeur pour qu'il puisse être modifié dans la fonction)
     // Ici, le arrayInit gère touys seul et quitte le programme s'il y a une erreur
+<<<<<<< HEAD
 
     //----------------------Boucle sur chaque ligne du fichier -----------------------------------------------------
+=======
+    //----------------------Boucle sur chaque ligner du fichier -----------------------------------------------------
+>>>>>>> 3d89eace0dc4a158481835595821caf75f7d97e0
     while(fgets(ligne, sizeof ligne, input)) { //Tant qu'on peut lire une ligne du fichier d'entrée
-        char valeur_recup[4096];
+        empty_file =false; //le fichier n'est donc pas vide
         int iteration;
 
+        char *p = ligne;
+        char *end;
 
-        //V---------------------------6Verification du format de la ligne----------------------------------------------
-        if (sscanf(ligne, "%4095s %d", valeur_recup, &iteration) != 2) { //On lit deux entiers par ligne
-        fprintf(stderr, "Ligne invalide: %s \n", ligne);
-        continue;
-        }else {
-            log_info("Nous devons appliquer la suite au nombre %s, et ce %d fois \n", valeur_recup, iteration);
+        // ignorer espaces initiaux
+        while (*p == ' ' || *p == '\t') p++;
+
+        // ligne vide ou espaces
+        if (*p == '\n' || *p == '\0') {
+            fprintf(stderr, "Ligne invalide: %s", ligne);
+            continue;
         }
 
+        // lire valeur initiale (UNIQUEMENT chiffres)
+        char valeur_recup[4096];
+        int k = 0;
+
+        while (*p && *p != ' ' && *p != '\t' && *p != '\n') {
+            if (*p < '0' || *p > '9') {
+                fprintf(stderr, "Ligne invalide: %s", ligne);
+                goto next_line;
+            }
+            valeur_recup[k++] = *p++;
+        }
+        valeur_recup[k] = '\0';
+
+        // ignorer espaces
+        while (*p == ' ' || *p == '\t') p++;
+
+        // itération absente
+        if (*p == '\n' || *p == '\0') {
+            fprintf(stderr, "Ligne invalide: %s", ligne);
+            goto next_line;
+        }
+
+        // lire itération
+        long iteration_long = strtol(p, &end, 10);
+
+        // caractères invalides après le nombre
+        if (*end != '\n' && *end != '\0') {
+            fprintf(stderr, "Ligne invalide: %s", ligne);
+            goto next_line;
+        }
+
+        // itération invalide
+        if (iteration_long <= 0) {
+            fprintf(stderr, "Ligne invalide: %s", ligne);
+            goto next_line;
+        }
+
+        iteration = (int) iteration_long;
+
+        // ligne valide → continuer normalement
+        goto valid_line;
+
+        next_line:
+        continue;
+
+        valid_line:
+        log_info("Nous devons appliquer la suite au nombre %s, et ce %d fois\n",
+                valeur_recup, iteration);
 
         //-------------------------Création de notre char changeable, valeur, sur le heap-------------------------------------
         string_dynamique* valeur = NULL;
@@ -151,6 +208,9 @@ void solve(FILE *input, FILE *output, bool only_longest) {
             freeArray(new_valeur);
         }
     } //Fin de la boucle sur les lignes du fichier
+    if (empty_file) {
+        log_info("Le fichier d'entrée est vide, aucun traitement effectué.\n");
+    }
     if (only_longest) {
         //On écrit le/les longuest(s) dans le fichier de sortie
         for (size_t k = 0; k < longuest->size; k++) {
