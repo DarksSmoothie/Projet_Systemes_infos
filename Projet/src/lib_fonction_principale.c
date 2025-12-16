@@ -51,7 +51,7 @@ void solve(FILE *input, FILE *output, bool only_longest) {
             // Nouvelle valeur temporaire
 
 
-            int j = 0;
+            size_t j = 0;
             //------------------------------On traite la valeure actuelle----------------------------------------------------
             while(j<valeur->size) { //-1 car on a le /0 à la fin du string
                 int j_origine = j;

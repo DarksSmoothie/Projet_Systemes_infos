@@ -9,6 +9,9 @@
 // Nous allons devoir utiliser un système d'allocation dynamique avec malloc, realloc et free
 
 
+char debug_level = '0'; //Variable globale pour le niveau de debug mais on l'initialise ici
+
+
 //___________________TABLEAUX DYNAMIQUES POUR CHAR (strings dynamiques)_____________________
 
 int verifReallocString(string_dynamique *container, size_t m) {
@@ -140,9 +143,12 @@ int longuestAppend(tableau_strings_dynamique *container, char *stringAjout) {
     if (!container || !stringAjout) return -1;
 
     //Verification de la capacité et realloc si besoin                   
-    if (verifReallocLonguest(container, container->size +1) != 0) {return -1;}     
-    container->array[container->size] = strdup(stringAjout); //On duplique le string pour éviter les problèmes de pointeurs
+    if (verifReallocLonguest(container, container->size +1) != 0) {return -1;}  
+    size_t len = strlen(stringAjout) + 1;                   // +1 pour le caractère nul de fin de string
+    container->array[container->size] = malloc(len);        //ON alloue l'espace nécéssaire pour stocker notre string à la fin de notre tableau array[container->size]
     if (!container->array[container->size]) {return -1;}
+ 
+    memcpy(container->array[container->size], stringAjout, len);
     container->size += 1;
     return 0;
 }

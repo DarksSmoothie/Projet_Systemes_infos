@@ -2,7 +2,9 @@
 #include <stdlib.h>
 #include <math.h>
 #include <stdbool.h> 
+#include <string.h>
 #include "lib_fonction_principale.h"
+#include "lib_utilitaires.h"
 
 
 
@@ -11,7 +13,6 @@
 int main(int argc, char *argv[]) { //Argc = nb arguments programme et Argv = tableau avec les arguments
 //Le premier argument de argv est toujours le nom du programme
     bool only_longest = false; 
-    extern char debug_level = '0'; 
     char *input_path = NULL;
     char *output_path = NULL;
 

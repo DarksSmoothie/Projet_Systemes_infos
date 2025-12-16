@@ -1,0 +1,20 @@
+# Fichiers objets (compilation)
+*.o
+
+# Exécutable
+math_suite
+
+# Fichiers temporaires / éditeur
+*~
+*.swp
+*.swo
+
+# Fichiers d'entrée / sortie (tests)
+*.txt
+
+# Dossiers générés (si jamais)
+build/
+dist/
+
+# Logs éventuels
+*.log
