@@ -10,7 +10,7 @@ math_suite
 *.swo
 
 # Fichiers d'entrée / sortie (tests)
-*.txt
+'/code python/'
 
 # Dossiers générés (si jamais)
 build/
