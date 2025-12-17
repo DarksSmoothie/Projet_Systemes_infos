@@ -1,5 +1,5 @@
 // Pilotage d'une LED RGB anode commune via GPIO (sysfs)
-
+#include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <sys/stat.h>
+#define _POSIX_C_SOURCE 200809L
 
 #include "lib_couleurs.h"
 
@@ -89,10 +90,32 @@ int led_set_error(void)   { return red();   }
 
 int led_toggle_running(void) {
     static bool toggle = false;
+    static struct timespec last = {0};
+
+    struct timespec now;
+    clock_gettime(CLOCK_MONOTONIC, &now);
+
+    long elapsed_ms =
+        (now.tv_sec - last.tv_sec) * 1000L +
+        (now.tv_nsec - last.tv_nsec) / 1000000L;
+
+    if (last.tv_sec == 0 && last.tv_nsec == 0) {
+        // première fois: initialise et allume une couleur
+        last = now;
+        toggle = false;
+        return blue();
+    }
+
+    if (elapsed_ms < 200) {
+        // pas encore le moment de changer
+        return 0;
+    }
+
+    last = now;
     toggle = !toggle;
-    /* Couleurs d'exécution (hors rouge/vert) : bleu et violet. */
-    return toggle ? blue() : purple();
+    return toggle ? purple() : blue();
 }
+
 
 int turnOff(void)   { return set_rgb(LED_OFF, LED_OFF, LED_OFF); }
 int white(void)     { return set_rgb(LED_ON,  LED_ON,  LED_ON ); }

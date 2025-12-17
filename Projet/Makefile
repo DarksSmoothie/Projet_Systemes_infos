@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c99 -Wall -Wextra -Iinclude
+CFLAGS = -std=c99 -Wall -Wextra -Iinclude -D_POSIX_C_SOURCE=200809L
 
 TARGET = math_suite
 OBJ = src/main.o src/lib_utilitaires.o src/lib_fonction_principale.o src/lib_couleurs.o

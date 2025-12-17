@@ -2,12 +2,9 @@
 
 #ifndef LIB_COULEURS_H
 #define LIB_COULEURS_H
+#define _POSIX_C_SOURCE 200809L
 
-/*
- * Pilotage d'une LED RGB via les GPIO du Raspberry Pi.
- * Les broches sont actives à l'état bas (LOW allume la LED).
- * Nécessite les permissions d'écriture dans /sys/class/gpio (souvent sudo).
- */
+//Attention, nécéssite sudo
 
 /* Prépare les GPIO (export + direction=out) et éteint la LED.
  * Retourne 0 si tout va bien, -1 sinon. */
