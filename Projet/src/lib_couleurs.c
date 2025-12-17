@@ -11,7 +11,6 @@
 
 #include "lib_couleurs.h"
 
-
 static const int RED_PIN = 12; 
 static const int GREEN_PIN = 19;
 static const int BLUE_PIN = 13;
@@ -24,6 +23,27 @@ static int file_exists(const char *path) {
     struct stat st;
     return stat(path, &st) == 0;
 }
+int led_set_success(void) { return green(); }
+
+int led_set_error(void)   { return red();   }
+
+int led_toggle_running(void) {
+
+
+    static bool toggle = false;
+
+
+    toggle = !toggle;
+
+
+    /* Couleurs d'exécution (pas rouge/vert) : bleu et violet. */
+
+
+    return toggle ? blue() : purple();
+
+}
+
+
 
 static int write_str(const char *path, const char *value) {
     FILE *f = fopen(path, "w");
