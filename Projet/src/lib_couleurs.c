@@ -23,25 +23,7 @@ static int file_exists(const char *path) {
     struct stat st;
     return stat(path, &st) == 0;
 }
-int led_set_success(void) { return green(); }
 
-int led_set_error(void)   { return red();   }
-
-int led_toggle_running(void) {
-
-
-    static bool toggle = false;
-
-
-    toggle = !toggle;
-
-
-    /* Couleurs d'exécution (pas rouge/vert) : bleu et violet. */
-
-
-    return toggle ? blue() : purple();
-
-}
 
 
 
