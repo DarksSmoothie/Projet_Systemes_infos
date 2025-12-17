@@ -11,9 +11,10 @@
 
 #include "lib_couleurs.h"
 
-static const int RED_PIN = 17; 
-static const int GREEN_PIN = 27;
-static const int BLUE_PIN = 22;
+
+static const int RED_PIN = 12; 
+static const int GREEN_PIN = 19;
+static const int BLUE_PIN = 13;
 
 /* LED active à l'état bas : 0 = on, 1 = off. */
 #define LED_ON 0
