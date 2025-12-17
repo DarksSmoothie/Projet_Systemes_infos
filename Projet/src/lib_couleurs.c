@@ -11,9 +11,9 @@
 #include "lib_couleurs.h"
 
 /* Numéros GPIO (BCM) pour chaque couleur. Adapte-les à ton câblage. */
-static const int RED_PIN = 17;
-static const int GREEN_PIN = 27;
-static const int BLUE_PIN = 22;
+static const int RED_PIN = 12;
+static const int GREEN_PIN = 19;
+static const int BLUE_PIN = 13;
 
 /* LED anode commune : active à l'état bas (0 = allumé, 1 = éteint). */
 #define LED_ON 0
