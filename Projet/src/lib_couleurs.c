@@ -1,5 +1,4 @@
-//basé sur un script python dispo via le syllabus => retranscipts en C 
-// implémentation des fonctions couleurs etc
+// Pilotage d'une LED RGB anode commune via GPIO (sysfs)
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,11 +10,12 @@
 
 #include "lib_couleurs.h"
 
-static const int RED_PIN = 17; 
+/* Numéros GPIO (BCM) pour chaque couleur. Adapte-les à ton câblage. */
+static const int RED_PIN = 17;
 static const int GREEN_PIN = 27;
 static const int BLUE_PIN = 22;
 
-/* LED active à l'état bas : 0 = on, 1 = off. */
+/* LED anode commune : active à l'état bas (0 = allumé, 1 = éteint). */
 #define LED_ON 0
 #define LED_OFF 1
 
@@ -39,7 +39,6 @@ static int ensure_output(int pin) {
     char path[96];
     snprintf(path, sizeof path, "/sys/class/gpio/gpio%d/direction", pin);
     if (!file_exists(path)) {
-        /* Try exporting then set direction. */
         char num[16];
         snprintf(num, sizeof num, "%d", pin);
         if (write_str("/sys/class/gpio/export", num) < 0) return -1;
@@ -65,7 +64,6 @@ static int set_rgb(int r_level, int g_level, int b_level) {
 }
 
 int led_init(void) {
-    /* Export et configure les broches, puis éteint la LED. */
     if (ensure_output(RED_PIN) < 0) return -1;
     if (ensure_output(GREEN_PIN) < 0) return -1;
     if (ensure_output(BLUE_PIN) < 0) return -1;
@@ -73,7 +71,6 @@ int led_init(void) {
 }
 
 void led_shutdown(void) {
-    /* On éteint puis on libère les GPIO. */
     turnOff();
     char num[16];
     snprintf(num, sizeof num, "%d", RED_PIN);
@@ -82,6 +79,16 @@ void led_shutdown(void) {
     write_str("/sys/class/gpio/unexport", num);
     snprintf(num, sizeof num, "%d", BLUE_PIN);
     write_str("/sys/class/gpio/unexport", num);
+}
+
+int led_set_success(void) { return green(); }
+int led_set_error(void)   { return red();   }
+
+int led_toggle_running(void) {
+    static bool toggle = false;
+    toggle = !toggle;
+    /* Couleurs d'exécution (hors rouge/vert) : bleu et violet. */
+    return toggle ? blue() : purple();
 }
 
 int turnOff(void)   { return set_rgb(LED_OFF, LED_OFF, LED_OFF); }
