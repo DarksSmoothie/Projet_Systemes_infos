@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) { //Argc = nb arguments programme et Argv = tab
     //Appel de notre fonction 
     if (led_init() == 0) {
         led_ok = true;
-        led_toggle_running(); /* première couleur pendant l'exécution */
+        led_toggle_running(); // première couleur pendant l'exécution 
     }
 
     int status = solve(input, output, only_longest, led_ok ? led_progress_cb : NULL);
