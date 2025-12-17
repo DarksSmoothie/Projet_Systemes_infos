@@ -5,15 +5,15 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-//#include <unistd.h>
+#include <unistd.h>
 #include <errno.h>
 #include <sys/stat.h>
 
 #include "lib_couleurs.h"
 
-static const int RED_PIN = 13;
-static const int GREEN_PIN = 17;
-static const int BLUE_PIN = 20;
+static const int RED_PIN = 17; 
+static const int GREEN_PIN = 27;
+static const int BLUE_PIN = 22;
 
 /* LED active à l'état bas : 0 = on, 1 = off. */
 #define LED_ON 0
@@ -82,16 +82,6 @@ void led_shutdown(void) {
     write_str("/sys/class/gpio/unexport", num);
     snprintf(num, sizeof num, "%d", BLUE_PIN);
     write_str("/sys/class/gpio/unexport", num);
-}
-
-int led_set_success(void) { return green(); }
-int led_set_error(void)   { return red();   }
-
-int led_toggle_running(void) {
-    static bool toggle = false;
-    toggle = !toggle;
-    /* Couleurs d'exécution (pas rouge/vert) : bleu et violet. */
-    return toggle ? blue() : purple();
 }
 
 int turnOff(void)   { return set_rgb(LED_OFF, LED_OFF, LED_OFF); }
